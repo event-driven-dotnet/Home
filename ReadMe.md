@@ -8,6 +8,20 @@ An event-driven microservices platform for .NET
 
 The purpose of [Event Driven .NET](https://github.com/event-driven-dotnet) is to provide a platform where .NET developers can build loosely coupled distributed systems consisting of services that can be deployed and scaled independently, replacing point-to-point communication with an [event bus abstraction](https://github.com/event-driven-dotnet/EventDriven.EventBus.Abstractions) that promotes asynchronous communication using a message broker.
 
+<p align="center">
+  <img width="900" src="images/event-driven-platform.png">
+</p>
+
+UI Clients, other domains and B2B partners interact synchronously and asynchronously with the Domain Edge by means of [REST](https://en.wikipedia.org/wiki/Representational_state_transfer), [GraphQL](https://graphql.org/) or events. Within a Domain, read and write services interact with one another by means of an event bus, performing updates to data stores which are private to each service. [Data analytics](https://en.wikipedia.org/wiki/Data_analysis) and [AI](https://en.wikipedia.org/wiki/Artificial_intelligence) / [ML](https://en.wikipedia.org/wiki/Machine_learning) ingest events to update their respective data stores.
+
+The event bus provides a [pub-sub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) abstraction for asynchronous inter-service communication.  [Dapr](https://dapr.io/) provides application-level building blocks for state management, pub/sub messaging, actors, etc. The message broker transports messages between publishers and subscribers. Examples of message brokers are [Amazon SNS+SQS](https://aws.amazon.com/blogs/aws/queues-and-notifications-now-best-friends/), [Azure Service Bus](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview) or [Apache Kafka](https://kafka.apache.org/).
+
+While Dapr provides some capabilities of a service mesh, such as inter-service encryption, monitoring and observability and delivery retries, it operates at the application level, whereas a [service mesh](https://en.wikipedia.org/wiki/Service_mesh) operates at the networking level and provides features such as routing and traffic splitting.
+
+[Kubernetes](https://kubernetes.io/) is an open-source system for automating deployment, scaling and management of containerized applications by grouping containers into units that can be discovered and managed. It can host plugins for storage, networking and scheduling and serves as a foundation for container-based microservices.
+
+Along side the microservices infrastructure stack are a number of cross-cutting concerns, such as monitoring and observability, security and privacy, feature flags, testing and deployment.
+
 ## Strategy
 
 The mission of **Event Driven .NET** is to provide a multi-layered platform upon which .NET developers can build distributed applications that deliver on the promise of microservices by enabling multiple teams working in parallel to deliver features to customers with greater speed and reliability.
@@ -48,10 +62,57 @@ Each layer is supported by **abstraction and implementation libraries**, which a
 
 ### Reference Architectures
 
-To aid you in implementing an event-driven microservices architecture, **Event Driven .NET** includes a base **reference architecture**, which includes a functioning solution that references the abstraction and implementation libraries listed above.
+To aid you in implementing an event-driven microservices architecture, **Event Driven .NET** includes **reference architectures**, which reference the abstractions listed above and provide a working example of how to structure a microservices solution based on event-driven architecture.
 
 - [EventDriven.ReferenceArchitecture](https://github.com/event-driven-dotnet/EventDriven.ReferenceArchitecture): Reference architecture for using EventDriven abstractions and libraries for **Domain Driven Design** (DDD), **Command-Query Responsibility Segregation** (CQRS) and **Event Driven Architecture** (EDA) with Dapr Event Bus.
+
+<p align="center">
+  <img width="900" src="images/event-driven-ref-arch.png">
+</p>
+
 - [EventDriven.Sagas](https://github.com/event-driven-dotnet/EventDriven.Sagas): Abstractions and reference architecture for implementing the **Saga pattern** to orchestrate atomic operations which span multiple services.
+
+<p align="center">
+  <img width="900" src="images/saga-orchestration.png">
+</p>
+
+## Getting Started
+
+To get started with **Event Driven .NET**, take the following steps to create a .NET Web API project that applies the principles of Domain Driven Design, Command Query Responsibility Segregation and Event Driven Architecture.
+
+1. Using a process such as [Event Storming](https://en.wikipedia.org/wiki/Event_storming), define a business [domain model](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/microservice-domain-model) with separate [bounded contexts](https://martinfowler.com/bliki/BoundedContext.html) and [aggregate roots](https://www.alibabacloud.com/blog/an-in-depth-understanding-of-aggregation-in-domain-driven-design_598034).
+   - While it may be possible to [scope microservices](https://programhappy.net/2020/10/18/implementing-domain-driven-design-with-microservices/) at the level of a bounded context, it is often preferable to create *one microservice per aggregate root*.
+2. Create a [.NET Web API project](https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api) with the following packages:
+   - MongoDB.Driver
+   - URF.Core.Mongo
+   - AutoMapper.Extensions.Microsoft.DependencyInjection
+   - EventDriven.DependencyInjection.URF.Mongo
+   - EventDriven.DDD.Abstractions
+   - EventDriven.EventBus.Dapr
+   - EventDriven.EventBus.Dapr.EventCache.Mongo
+3. Using Event Driven [Reference Architecture](https://github.com/event-driven-dotnet/EventDriven.ReferenceArchitecture) as a guide, follow the [Development Guide](https://github.com/event-driven-dotnet/EventDriven.ReferenceArchitecture#development-guide) to add domain **entities**, **commands** and **events**.
+   - Use **CustomerService** in the reference architecture as an example.
+4. Implement `ICommandProcessor` and `IEventApplier` interfaces on the aggregate root entity to add `Process` and `Apply` methods.
+   - The `Process` method returns one or more domain events.
+   - The `Apply` method accepts a domain event and contains business logic for updating the entity state. 
+   - This pattern enables the addition of [Event Sourcing](https://microservices.io/patterns/data/event-sourcing.html) at a later stage while minimizing the need for refactoring entities.
+5. Define **repository** interfaces and implementations to handle persistence concerns.
+   - The reference architecture utilizes [MongoDB](https://www.mongodb.com/) for persistence, but if you prefer feel free to use a SQL database and ORM, such as [Postgres](https://www.postgresql.org/) or [SQL Server](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker) with [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/).
+6. Add a **command handler** to process commands, apply events and persist entities.
+7. Add [Data Transfer Objects](https://docs.microsoft.com/en-us/aspnet/web-api/overview/data/using-web-api-with-entity-framework/part-5) (DTO's) and an [AutoMapper](https://automapper.org/) profile, so that controllers can accept and return DTO's instead of entities. 
+8. Add query and command **controllers**.
+   - Query controllers can accept a repository interface.
+   - Command controllers can accept a command handler.
+9.  Create an Integration class library project with C# records that extend `IntegrationEvent` and include models.
+   - Use the **Common** project as an example.
+   - Add the following package: EventDriven.EventBus.Abstractions.
+10. Update the command handler to accept an `IEventBus` and publish **integration events** so that subscribing projects may receive notifications of events.
+    - Reference the Integration project from the Web API project.
+11. Repeat the previous steps to create other services based on different aggregate roots.
+    - Use **OrderService** in the reference architecture as an example.
+    - Reference the Integration project to use integration events.
+    - Add **integration event handlers** with classes that extend `IntegrationEventHandler`.
+    - Update `Program` to map integration event handlers to event bus subscribers.
 
 ## Roadmap
 
