@@ -4,7 +4,7 @@ An event-driven microservices platform for .NET
 
 ## Introduction
 
-[Microservices](https://en.wikipedia.org/wiki/Microservices) is a popular paradigm for building highly scalable and flexible distributed systems based on Cloud computing. While the *what* of microservices is fairly unambiguous, the *how* is replete with pitfalls and perils. Many teams embark on the road of good intentions only to find themselves mired in a quicksand of tightly coupled systems -- the [distributed monolith](https://www.simplethread.com/youre-not-actually-building-microservices/) -- with few of the benefits but most of the difficulties of a traditional monolith. Much of this stems from using synchronous REST calls as the primary means of inter-service communication, which can result in systems that are brittle and inflexible, with teams that block one another and services that must be deployed and scaled as a single unit.
+[Microservices](https://en.wikipedia.org/wiki/Microservices) is a popular paradigm for building highly scalable and flexible distributed systems based on Cloud computing. While the *what* of microservices is fairly unambiguous, the *how* is replete with pitfalls and perils. Many teams embark on the road of good intentions only to find themselves mired in a quicksand of tightly coupled systems -- the [distributed monolith](https://www.simplethread.com/youre-not-actually-building-microservices/) -- with few of the benefits but most of the difficulties of a traditional monolith. Much of this stems from using synchronous REST calls as the primary means of inter-service communication, which can result in systems that are brittle and inflexible, teams that block one another, and services that must be deployed and scaled as a single unit.
 
 The purpose of [Event Driven .NET](https://github.com/event-driven-dotnet) is to provide a platform where .NET developers can build loosely coupled distributed systems consisting of services that can be deployed and scaled independently, replacing point-to-point communication with an [event bus abstraction](https://github.com/event-driven-dotnet/EventDriven.EventBus.Abstractions) that promotes asynchronous communication using a message broker.
 
@@ -12,13 +12,13 @@ The purpose of [Event Driven .NET](https://github.com/event-driven-dotnet) is to
   <img width="900" src="images/event-driven-platform.png">
 </p>
 
-UI Clients, other domains and B2B partners interact synchronously and asynchronously with the Domain Edge by means of [REST](https://en.wikipedia.org/wiki/Representational_state_transfer), [GraphQL](https://graphql.org/) or events. Within a Domain, read and write services interact with one another by means of an event bus, performing updates to data stores which are private to each service. [Data analytics](https://en.wikipedia.org/wiki/Data_analysis) and [AI](https://en.wikipedia.org/wiki/Artificial_intelligence) / [ML](https://en.wikipedia.org/wiki/Machine_learning) ingest events to update their respective data stores.
+UI Clients, other domains and B2B partners interact synchronously and asynchronously with the **Domain Edge** by means of [REST](https://en.wikipedia.org/wiki/Representational_state_transfer), [GraphQL](https://graphql.org/) or events. Within a **Domain**, read and write services interact with one another using an **Event Bus**, and they perform updates to data stores which are private to each service. The Event Bus supports *idempotency* with an event cache that allows filtering of duplicate messages, and it uses a *schema registry* to ensure that events for the same topic are compatible with registered schemas. [Sagas](https://microservices.io/patterns/data/saga.html) use the Event Bus to orchestrate updates across services so that they all succeed or are rolled back by means of compensating actions. [Data analytics](https://en.wikipedia.org/wiki/Data_analysis) and [AI](https://en.wikipedia.org/wiki/Artificial_intelligence) / [ML](https://en.wikipedia.org/wiki/Machine_learning) ingest events to update their respective data stores.
 
-The event bus provides a [pub-sub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) abstraction for asynchronous inter-service communication.  [Dapr](https://dapr.io/) provides application-level building blocks for state management, pub/sub messaging, actors, etc. The message broker transports messages between publishers and subscribers. Examples of message brokers are [Amazon SNS+SQS](https://aws.amazon.com/blogs/aws/queues-and-notifications-now-best-friends/), [Azure Service Bus](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview) or [Apache Kafka](https://kafka.apache.org/).
+The event bus provides a [pub-sub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) abstraction for asynchronous inter-service communication.  [Dapr](https://dapr.io/) provides application-level building blocks for state management, pub/sub messaging, actors, etc. The message broker transports messages between publishers and subscribers. Examples of supported message brokers are [Amazon SNS+SQS](https://aws.amazon.com/blogs/aws/queues-and-notifications-now-best-friends/), [Azure Service Bus](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview) or [Apache Kafka](https://kafka.apache.org/).
 
-While Dapr provides some capabilities of a service mesh, such as inter-service encryption, monitoring and observability and delivery retries, it operates at the application level, whereas a [service mesh](https://en.wikipedia.org/wiki/Service_mesh) operates at the networking level and provides features such as routing and traffic splitting.
+While Dapr provides some capabilities of a service mesh, such as inter-service encryption, monitoring, observability and delivery retries, it operates at the application level, whereas a [service mesh](https://en.wikipedia.org/wiki/Service_mesh) operates at the networking level and provides features such as routing and traffic splitting. Dapr can be used in combination with a service mesh.
 
-[Kubernetes](https://kubernetes.io/) is an open-source system for automating deployment, scaling and management of containerized applications by grouping containers into units that can be discovered and managed. It can host plugins for storage, networking and scheduling and serves as a foundation for container-based microservices.
+[Kubernetes](https://kubernetes.io/) is an open-source system for automating deployment, scaling and management of containerized applications by grouping containers into units that can be discovered and managed. It hosts plugins for storage, networking and scheduling, and it serves as a foundation for container-based microservices.
 
 Along side the microservices infrastructure stack are a number of cross-cutting concerns, such as monitoring and observability, security and privacy, feature flags, testing and deployment.
 
@@ -28,21 +28,21 @@ The mission of **Event Driven .NET** is to provide a multi-layered platform upon
 
 ### Layered Approach
 
-**Event Driven .NET** is designed to allow you to wade gradually into the waters of event-driven microservices so that your system architecture aligns with your organizational structure and the skill set of your developers, in addition to the maturity of your DevOps processes.
+**Event Driven .NET** is designed to allow you to wade gradually into the waters of event-driven microservices, so that your system architecture aligns with your organizational structure, as well as the skill set of your developers and the maturity of your DevOps processes.
 
 <p align="center">
   <img width="900" src="images/event-driven-layers.png">
 </p>
 
-Starting at the bottom, you can start by adopting a [Domain Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) (DDD) approach, then build on this foundation by adding [Command Query Responsibility Segregation](https://martinfowler.com/bliki/CQRS.html) (CQRS). When you have the need for inter-service communication, you can move to the [Event Bus](https://martinfowler.com/eaaDev/EventCollaboration.html) layer, utilizing [Dapr](https://dapr.io/) as a [pub-sub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) abstraction over an underlying message broker.
+Starting at the bottom, you adopt a [Domain Driven Design](https://en.wikipedia.org/wiki/Domain-driven_design) (DDD) approach, then build on this foundation by adding [Command Query Responsibility Segregation](https://martinfowler.com/bliki/CQRS.html) (CQRS). When you have the need for inter-service communication, you can move to the [Event Bus](https://martinfowler.com/eaaDev/EventCollaboration.html) layer, utilizing [Dapr](https://dapr.io/) as a [pub-sub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) abstraction over an underlying message broker.
 
 If you have the need to maintain eventual data consistency with updates to multiple services spanning a logically atomic operation, you are ready to advance to the next layer: [Sagas](https://microservices.io/patterns/data/saga.html). When your organization has the need for capabilities such as built-in audit trail and the ability to atomically persist and publish events, you may wish to move to the [Event Sourcing](https://microservices.io/patterns/data/event-sourcing.html) layer (to be implemented).
 
-Lastly, in order to obtain capabilities such as real-time data analysis and transformation, and if your IT organization can support it, you may wish to venture into [Event Streams](https://hazelcast.com/glossary/event-stream-processing/) (to be implemented).
+Lastly, if you wish to perform real-time data analysis and transformation, you may wish to explore [Event Streams](https://hazelcast.com/glossary/event-stream-processing/) (to be implemented).
 
 ### Abstractions
 
-Each layer is supported by **abstraction and implementation libraries**, which are distributed as [NuGet](https://www.nuget.org/) packages. Simply reference the appropriate package in your project in order to utilize its interfaces and classes.
+Each layer is supported by **abstraction** libraries, which are distributed as [NuGet](https://www.nuget.org/) packages. Simply reference the appropriate package in your project to utilize its interfaces and classes.
 
 - **Domain Driven Design**
   - [EventDriven.DDD.Abstractions](https://www.nuget.org/packages/EventDriven.DDD.Abstractions): Abstractions for implementing Domain Driven Design in .NET.
@@ -62,7 +62,7 @@ Each layer is supported by **abstraction and implementation libraries**, which a
 
 ### Reference Architectures
 
-To aid you in implementing an event-driven microservices architecture, **Event Driven .NET** includes **reference architectures**, which reference the abstractions listed above and provide a working example of how to structure a microservices solution based on event-driven architecture.
+To aid you in implementing an event-driven microservices architecture, **Event Driven .NET** includes **reference architectures**, which utilize the abstractions listed above to provide a working example of how to structure a microservices solution based on event-driven architecture.
 
 - [EventDriven.ReferenceArchitecture](https://github.com/event-driven-dotnet/EventDriven.ReferenceArchitecture): Reference architecture for using EventDriven abstractions and libraries for **Domain Driven Design** (DDD), **Command-Query Responsibility Segregation** (CQRS) and **Event Driven Architecture** (EDA) with Dapr Event Bus.
 
