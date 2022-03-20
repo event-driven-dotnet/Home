@@ -87,7 +87,7 @@ To get started with **Event Driven .NET**, take the following steps to create a 
    - URF.Core.Mongo
    - AutoMapper.Extensions.Microsoft.DependencyInjection
    - EventDriven.DependencyInjection.URF.Mongo
-   - EventDriven.DDD.Abstractions
+   - EventDriven.CQRS.Abstractions
    - EventDriven.EventBus.Dapr
    - EventDriven.EventBus.Dapr.EventCache.Mongo
 3. Using Event Driven [Reference Architecture](https://github.com/event-driven-dotnet/EventDriven.ReferenceArchitecture) as a guide, follow the [Development Guide](https://github.com/event-driven-dotnet/EventDriven.ReferenceArchitecture#development-guide) to add domain **entities**, **commands** and **events**.
@@ -103,7 +103,7 @@ To get started with **Event Driven .NET**, take the following steps to create a 
 8. Add query and command **controllers**.
    - Query controllers can accept a repository interface.
    - Command controllers can accept a command handler.
-9.  Create an Integration class library project with C# records that extend `IntegrationEvent` and include models.
+9. Create an Integration class library project with C# records that extend `IntegrationEvent` and include models.
    - Use the **Common** project as an example.
    - Add the following package: EventDriven.EventBus.Abstractions.
 10. Update the command handler to accept an `IEventBus` and publish **integration events** so that subscribing projects may receive notifications of events.
