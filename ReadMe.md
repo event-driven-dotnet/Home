@@ -20,11 +20,13 @@ While Dapr provides some capabilities of a service mesh, such as inter-service e
 
 [Kubernetes](https://kubernetes.io/) is an open-source system for automating deployment, scaling and management of containerized applications by grouping containers into units that can be discovered and managed. It hosts plugins for storage, networking and scheduling, and it serves as a foundation for container-based microservices.
 
-Along side the microservices infrastructure stack are a number of cross-cutting concerns, such as monitoring and observability, security and privacy, feature flags, testing and deployment.
+Along side the microservices infrastructure stack are a number of *cross-cutting concerns*, such as monitoring and observability, security and privacy, feature flags, testing and deployment.
 
 ## Strategy
 
-The mission of **Event Driven .NET** is to provide a multi-layered platform upon which .NET developers can build distributed applications that deliver on the promise of microservices by enabling multiple teams working in parallel to deliver features to customers with greater speed and reliability.
+The mission of **Event Driven .NET** is to furnish a *multi-layered platform* upon which .NET developers can build distributed applications that deliver on the promise of microservices by enabling multiple teams working in parallel to deliver features to customers with greater speed and reliability.
+
+Rather than building a high prescriptive framework that locks developers into one way of building microservices, Event Driven .NET includes a set of *abstractions* that can be implemented in any number of ways. For convenience some default implementations are supplied so that developers can get started right away building event-driven microservices. But rather than attempting to do everything for the developer, Event Driven .NET instead provides a set of reference architectures which teams can use as examples for building distributed systems which reflect their organization's business needs and operational maturity.
 
 ### Layered Approach
 
@@ -42,22 +44,41 @@ Lastly, if you wish to perform real-time data analysis and transformation, you m
 
 ### Abstractions
 
-Each layer is supported by **abstraction** libraries, which are distributed as [NuGet](https://www.nuget.org/) packages. Simply reference the appropriate package in your project to utilize its interfaces and classes.
+Each layer is supported by a set of **abstraction** distributed as [NuGet](https://www.nuget.org/) packages.
+
+> **Note**: [EventDriven.CQRS.Abstractions](https://github.com/event-driven-dotnet/EventDriven.CQRS.Abstractions) version 2.0 or later uses [MediatR](https://github.com/jbogard/MediatR) to enable a handler per command pattern with behaviors for cross-cutting concerns.
 
 - **Domain Driven Design**
-  - [EventDriven.DDD.Abstractions](https://www.nuget.org/packages/EventDriven.DDD.Abstractions): Abstractions for implementing Domain Driven Design in .NET.
+  - [EventDriven.DDD.Abstractions](https://www.nuget.org/packages/EventDriven.DDD.Abstractions): Abstractions for implementing Domain Driven Design.
+- **Command Query Responsibility Segregation**
+  - [EventDriven.CQRS.Abstractions](https://www.nuget.org/packages/EventDriven.DependencyInjection/): Abstractions for implementing Command Query Responsibility Segregation.
+- **Dependency Injection**
+  - [EventDriven.DependencyInjection](https://www.nuget.org/packages/EventDriven.DependencyInjection.URF.Mongo/): Helper methods for configuring services with dependency injection.
 - **Event Bus**
   - [EventDriven.EventBus.Abstractions](https://www.nuget.org/packages/EventDriven.EventBus.Abstractions): Generic event bus abstraction. 
-  - [EventDriven.EventBus.Dapr](https://www.nuget.org/packages/EventDriven.EventBus.Dapr): Event bus abstraction over Dapr pub/sub.
-  - [EventDriven.EventBus.Dapr.EventCache.Mongo](https://www.nuget.org/packages/EventDriven.EventBus.Dapr.EventCache.Mongo): MongoDB implementation of event caching with Dapr state store.
-  - [EventDriven.SchemaRegistry.Mongo](https://www.nuget.org/packages/EventDriven.SchemaRegistry.Mongo): MongoDB state store for validating messages against schemas that are stored in a registry by topic name.
+  - [EventDriven.SchemaRegistry.Abstractions](https://www.nuget.org/packages/EventDriven.SchemaRegistry.Abstractions): Generic schema registry abstraction. 
 - **Sagas**
   - [EventDriven.Sagas.Abstractions](https://www.nuget.org/packages/EventDriven.Sagas.Abstractions): Abstractions for sagas, steps, actions, commands, dispatchers, handlers and evaluators.
   - [EventDriven.Sagas.Configuration.Abstractions](https://www.nuget.org/packages/EventDriven.Sagas.Configuration.Abstractions): Abstractions for saga configurations.
-  - [EventDriven.Sagas.Configuration.Mongo](https://www.nuget.org/packages/EventDriven.Sagas.Configuration.Mongo): MongoDB implementation for saga configuration repositories.
-  - [EventDriven.Sagas.DependencyInjection](https://www.nuget.org/packages/EventDriven.Sagas.DependencyInjection): `AddSaga` service collection extension methods.
   - [EventDriven.Sagas.EventBus.Abstractions](https://www.nuget.org/packages/EventDriven.Sagas.EventBus.Abstractions): Abstractions for handling integration events and dispatching command results.
   - [EventDriven.Sagas.Persistence.Abstractions](https://www.nuget.org/packages/EventDriven.Sagas.Persistence.Abstractions): Abstractions for persisting saga snapshots.
+
+### Libraries
+
+Each layer is supported by a set of **abstraction** distributed as [NuGet](https://www.nuget.org/) packages. Simply reference the appropriate package in your project to utilize its interfaces and classes.
+
+- **Command Query Responsibility Segregation**
+  - [EventDriven.CQRS.Extensions](https://www.nuget.org/packages/EventDriven.CQRS.Extensions/): Extensions for implementing Command Query Responsibility Segregation.
+- **Dependency Injection**
+  - [EventDriven.DependencyInjection.Mongo](https://www.nuget.org/packages/EventDriven.DependencyInjection.URF.Mongo/): Helper methods for configuring services for MongoDB with dependency injection.
+- **Event Bus**
+  - [EventDriven.EventBus.Dapr](https://www.nuget.org/packages/EventDriven.EventBus.Dapr): Event bus abstraction over Dapr pub/sub.
+  - [EventDriven.EventBus.Dapr.EventCache.Mongo](https://www.nuget.org/packages/EventDriven.EventBus.Dapr.EventCache.Mongo): MongoDB implementation of event caching with Dapr state store.
+  - [EventDriven.SchemaValidator.Json](https://www.nuget.org/packages/EventDriven.SchemaValidator.Json/): JSON implementation of a schema validator.
+  - [EventDriven.SchemaRegistry.Mongo](https://www.nuget.org/packages/EventDriven.SchemaRegistry.Mongo): MongoDB state store for validating messages against schemas that are stored in a registry by topic name.
+- **Sagas**
+  - [EventDriven.Sagas.Configuration.Mongo](https://www.nuget.org/packages/EventDriven.Sagas.Configuration.Mongo): MongoDB implementation for saga configuration repositories.
+  - [EventDriven.Sagas.DependencyInjection](https://www.nuget.org/packages/EventDriven.Sagas.DependencyInjection): `AddSaga` service collection extension methods.
   - [EventDriven.Sagas.Persistence.Mongo](https://www.nuget.org/packages/EventDriven.Sagas.Persistence.Mongo): MongoDB implementation for persisting saga snapshots.
 
 ### Reference Architectures
@@ -72,9 +93,7 @@ To aid you in implementing an event-driven microservices architecture, **Event D
 
 - [EventDriven.Sagas](https://github.com/event-driven-dotnet/EventDriven.Sagas): Abstractions and reference architecture for implementing the **Saga pattern** to orchestrate atomic operations which span multiple services.
 
-<p align="center">
-  <img width="900" src="images/saga-orchestration.png">
-</p>
+![Saga Orchestration](images/saga-orchestration.png)
 
 ## Getting Started
 
@@ -90,7 +109,7 @@ To get started with **Event Driven .NET**, take the following steps to create a 
    - EventDriven.CQRS.Abstractions
    - EventDriven.EventBus.Dapr
    - EventDriven.EventBus.Dapr.EventCache.Mongo
-3. Using Event Driven [Reference Architecture](https://github.com/event-driven-dotnet/EventDriven.ReferenceArchitecture) as a guide, follow the [Development Guide](https://github.com/event-driven-dotnet/EventDriven.ReferenceArchitecture#development-guide) to add domain **entities**, **commands** and **events**.
+3. Using Event Driven [Reference Architecture](https://github.com/event-driven-dotnet/EventDriven.ReferenceArchitecture) as a guide, follow the [Development Guide](https://github.com/event-driven-dotnet/EventDriven.ReferenceArchitecture/blob/master/DevelopmentGuide.md) to add domain **entities**, **commands** and **events**.
    - Use **CustomerService** in the reference architecture as an example.
 4. Implement `ICommandProcessor` and `IEventApplier` interfaces on the aggregate root entity to add `Process` and `Apply` methods.
    - The `Process` method returns one or more domain events.
@@ -120,3 +139,11 @@ The roadmap for **Event Driven .NET** includes the following items:
 
 - **Event Sourcing**: This will provide the ability to treat domain events as the *source of truth* for a system, so that services no longer need to treat persistence and event publishing atomically. It also provides built-in audit trail. 
 - **Event Streams**: This will support real-time data analysis and transformation by means of a durable, append-only message broker, such as [Apache Kafka](https://kafka.apache.org/) or [Amazon Kinesis](https://aws.amazon.com/kinesis/).
+
+## Contributing
+
+_Contributions from the community are welcome!_
+
+To ask a question, report a defect or propose an enhancement, please [open an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/quickstart) in the appropriate repository. If you are unsure of which repository is appropriate, or your issue is general in nature, please open an issue in the Event Driven .NET [Home](https://github.com/event-driven-dotnet/Home) repository.
+
+If you wish to contribute a change to any repository, please refer to the [Contributing Guidelines](https://github.com/event-driven-dotnet/.github/blob/5976fb2e7bdce6a169327a9badb5f48b0d50d503/CONTRIBUTING.md). Before [creating a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request), please open an issue in the repository where you wish to propose a change.
