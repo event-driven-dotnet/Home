@@ -73,7 +73,8 @@ Each layer is supported by a set of **abstraction** distributed as [NuGet](https
   - [EventDriven.DependencyInjection.Mongo](https://www.nuget.org/packages/EventDriven.DependencyInjection.URF.Mongo/): Helper methods for configuring services for MongoDB with dependency injection.
 - **Event Bus**
   - [EventDriven.EventBus.Dapr](https://www.nuget.org/packages/EventDriven.EventBus.Dapr): Event bus abstraction over Dapr pub/sub.
-  - [EventDriven.EventBus.Dapr.EventCache.Mongo](https://www.nuget.org/packages/EventDriven.EventBus.Dapr.EventCache.Mongo): MongoDB implementation of event caching with Dapr state store.
+  - [EventDriven.EventBus.EventCache.Mongo](https://www.nuget.org/packages/EventDriven.EventBus.EventCache.Mongo): MongoDB implementation of event caching.
+  - [EventDriven.EventBus.EventCache.Redis](https://www.nuget.org/packages/EventDriven.EventBus.EventCache.Redis): Redis implementation of event caching.
   - [EventDriven.SchemaValidator.Json](https://www.nuget.org/packages/EventDriven.SchemaValidator.Json/): JSON implementation of a schema validator.
   - [EventDriven.SchemaRegistry.Mongo](https://www.nuget.org/packages/EventDriven.SchemaRegistry.Mongo): MongoDB state store for validating messages against schemas that are stored in a registry by topic name.
 - **Sagas**
